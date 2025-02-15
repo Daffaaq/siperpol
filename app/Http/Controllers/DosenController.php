@@ -61,11 +61,14 @@ class DosenController extends Controller
         $user = User::create([
             'name' => $validatedData['nama_dosen'],
             'email' => $validatedData['email_dosen'],
-            'password' => bcrypt($validatedData['password_dosen']),
+            'password' => Hash::make($validatedData['password_dosen']),  // Hash password for user
         ]);
+
+        $user->assignRole('dosen');
 
         // Add the user_id to the validated data before saving the Dosen record
         $validatedData['users_id'] = $user->id;
+        $validatedData['password_dosen'] = Hash::make($validatedData['password_dosen']);  // Hash password for Dosen
 
         // Save the Dosen data with the associated user_id
         Dosen::create($validatedData);
@@ -80,6 +83,7 @@ class DosenController extends Controller
             'users_id' => auth()->user()->id
         ]);
 
+        // Create message for the system
         Message::create([
             'sender' => 'System',
             'message' => 'Dosen baru telah berhasil ditambahkan.',
@@ -88,9 +92,10 @@ class DosenController extends Controller
             'users_id' => auth()->user()->id
         ]);
 
-        // Redirect atau beri respon setelah data berhasil disimpan
+        // Redirect or send a response after data is successfully saved
         return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil disimpan!');
     }
+
 
     /**
      * Display the specified resource.
