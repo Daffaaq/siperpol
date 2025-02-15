@@ -105,6 +105,18 @@
 
                         <!-- Right Column (6 fields) -->
                         <div class="col-md-6">
+                            <!-- Nama Panggilan Dosen -->
+                            <div class="form-group">
+                                <label for="nama_panggilan_dosen">Nama PanggilanDosen: <span class="text-danger">*</span></label>
+                                <input type="text" name="nama_panggilan_dosen" id="nama_panggilan_dosen" placeholder="Nama Dosen"
+                                    class="form-control @error('nama_panggilan_dosen') is-invalid @enderror"
+                                    value="{{ old('nama_panggilan_dosen') }}">
+                                @error('nama_panggilan_dosen')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                             <!-- Password Dosen -->
                             <div class="form-group">
                                 <label for="password_dosen">Password Dosen: <span class="text-danger">*</span></label>

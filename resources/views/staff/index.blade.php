@@ -4,26 +4,26 @@
     <div class="container-fluid">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Dosen Management</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Staff Management</h6>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('dosen.index') }}"
-                            class="{{ request()->routeIs('dosen.index') ? 'active' : '' }}">Dosen Management</a>
+                        <a href="{{ route('staff.index') }}"
+                            class="{{ request()->routeIs('staff.index') ? 'active' : '' }}">Staff Management</a>
                     </li>
                 </ol>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('dosen.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dosen
+                    <a href="{{ route('staff.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Staff
                     </a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="DosenTables" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="StaffTables" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Dosen</th>
+                                <th>Nama Staff</th>
                                 <th>Email</th>
                                 <th>Jenis Kelamin</th>
                                 <th>Action</th>
@@ -72,11 +72,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $(document).ready(function() {
-            var dataMaster = $('#DosenTables').DataTable({
+            var dataMaster = $('#StaffTables').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route('dosen.list') }}',
+                    url: '{{ route('staff.list') }}',
                     type: 'POST',
                     dataType: 'json',
                     data: {
@@ -90,16 +90,16 @@
                         searchable: false
                     },
                     {
-                        data: 'nama_dosen',
-                        name: 'nama_dosen'
+                        data: 'nama_staff',
+                        name: 'nama_staff'
                     },
                     {
-                        data: 'email_dosen',
-                        name: 'email_dosen'
+                        data: 'email_staff',
+                        name: 'email_staff'
                     },
                     {
-                        data: 'jenis_kelamin_dosen',
-                        name: 'jenis_kelamin_dosen',
+                        data: 'jenis_kelamin_staff',
+                        name: 'jenis_kelamin_staff',
                         render: function(data) {
                             return data == 'L' ? 'Laki-laki' : 'Perempuan';
                         }
@@ -110,8 +110,8 @@
                         orderable: false,
                         searchable: false,
                         render: function(data) {
-                            let showUrl = `/user-management/dosen/${data}`;
-                            let editUrl = `/user-management/dosen/${data}/edit`;
+                            let showUrl = `/user-management/staff/${data}`;
+                            let editUrl = `/user-management/staff/${data}/edit`;
 
                             return `
                                 <a href="${showUrl}" class="btn icon btn-sm btn-info">
@@ -159,7 +159,7 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const url = `/user-management/dosen/${id}`;
+                    const url = `/user-management/staff/${id}`;
                     $.ajax({
                         url: url,
                         type: 'DELETE',
@@ -178,7 +178,7 @@
                                     timer: 3000,
                                     timerProgressBar: true,
                                 });
-                                $('#DosenTables').DataTable().ajax.reload();
+                                $('#StaffTables').DataTable().ajax.reload();
                                 window.location.reload();
                             } else {
                                 Swal.fire({

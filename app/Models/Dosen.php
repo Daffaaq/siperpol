@@ -13,8 +13,8 @@ class Dosen extends Model
     protected $table = 'dosens';
 
     protected $fillable = [
-        'id',
         'nama_dosen',
+        'nama_panggilan_dosen',
         'nidn_dosen',
         'nip_dosen',
         'email_dosen',

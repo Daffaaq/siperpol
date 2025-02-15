@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleAndPermission\AssignPermissionController;
 use App\Http\Controllers\RoleAndPermission\AssignUserToRoleController;
 use App\Http\Controllers\RoleAndPermission\PermissionController;
 use App\Http\Controllers\RoleAndPermission\RoleController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +31,8 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', function () {
         return view('home');
-    });
+    })->name('dashboard');
+
 
     Route::post('/message/read/{id}', [MessageController::class, 'markAsRead'])->name('message.read');
     Route::post('/alert/read/{id}', [MessageController::class, 'alertAsRead'])->name('alert.read');
@@ -42,6 +44,10 @@ Route::group(['middleware' => ['auth']], function () {
         //dosen
         Route::resource('dosen', DosenController::class);
         Route::post('/dosen/list', [DosenController::class, 'list'])->name('dosen.list');
+
+        //staff
+        Route::resource('staff', StaffController::class);
+        Route::post('/staff/list', [StaffController::class, 'list'])->name('staff.list');
     });
     Route::prefix('category-management')->group(function () {
         Route::resource('category', CategoryController::class);

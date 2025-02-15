@@ -55,45 +55,59 @@ class DosenController extends Controller
      */
     public function store(StoreDosenRequest $request)
     {
-        $validatedData = $request->validated();
+        DB::beginTransaction(); // Start the transaction
 
-        // Create the user and get the user ID
-        $user = User::create([
-            'name' => $validatedData['nama_dosen'],
-            'email' => $validatedData['email_dosen'],
-            'password' => Hash::make($validatedData['password_dosen']),  // Hash password for user
-        ]);
+        try {
+            $validatedData = $request->validated();
 
-        $user->assignRole('dosen');
+            // Create the user and get the user ID
+            $user = User::create([
+                'name' => $validatedData['nama_panggilan_dosen'],
+                'email' => $validatedData['email_dosen'],
+                'password' => Hash::make($validatedData['password_dosen']),  // Hash password for user
+            ]);
 
-        // Add the user_id to the validated data before saving the Dosen record
-        $validatedData['users_id'] = $user->id;
-        $validatedData['password_dosen'] = Hash::make($validatedData['password_dosen']);  // Hash password for Dosen
+            $user->assignRole('dosen');
 
-        // Save the Dosen data with the associated user_id
-        Dosen::create($validatedData);
+            // Add the user_id to the validated data before saving the Dosen record
+            $validatedData['users_id'] = $user->id;
+            $validatedData['password_dosen'] = Hash::make($validatedData['password_dosen']);  // Hash password for Dosen
 
-        // Add alert notification
-        Alert::create([
-            'title' => 'Data Dosen Ditambahkan',
-            'message' => 'Dosen baru telah berhasil ditambahkan.',
-            'type' => 'info',
-            'sended_at' => now(),
-            'is_read' => false,
-            'users_id' => auth()->user()->id
-        ]);
+            // Save the Dosen data with the associated user_id
+            Dosen::create($validatedData);
 
-        // Create message for the system
-        Message::create([
-            'sender' => 'System',
-            'message' => 'Dosen baru telah berhasil ditambahkan.',
-            'status' => 'unread',
-            'sended_time' => now(),
-            'users_id' => auth()->user()->id
-        ]);
+            // Add alert notification
+            Alert::create([
+                'title' => 'Data Dosen Ditambahkan',
+                'message' => 'Dosen baru telah berhasil ditambahkan.',
+                'type' => 'info',
+                'sended_at' => now(),
+                'is_read' => false,
+                'users_id' => auth()->user()->id
+            ]);
 
-        // Redirect or send a response after data is successfully saved
-        return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil disimpan!');
+            // Create message for the system
+            Message::create([
+                'sender' => 'System',
+                'message' => 'Dosen baru telah berhasil ditambahkan.',
+                'status' => 'unread',
+                'sended_time' => now(),
+                'users_id' => auth()->user()->id
+            ]);
+
+            // Commit the transaction
+            DB::commit();
+
+            return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil disimpan!');
+        } catch (\Exception $e) {
+            // If any error occurs, rollback the transaction
+            DB::rollBack();
+
+            // Optionally, you can log the exception message for debugging
+            Log::error('Error occurred while storing dosen: ' . $e->getMessage());
+
+            return back()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
+        }
     }
 
 
@@ -119,58 +133,75 @@ class DosenController extends Controller
      */
     public function update(UpdateDosenRequest $request, $id)
     {
-        // Ambil data dosen berdasarkan ID
-        $dosen = Dosen::findOrFail($id);
+        DB::beginTransaction(); // Start the transaction
 
-        // Validasi input dari request
-        $validatedData = $request->validated();
+        try {
+            // Ambil data dosen berdasarkan ID
+            $dosen = Dosen::findOrFail($id);
 
-        // Cek apakah email atau password perlu diupdate
-        if ($request->filled('email_dosen') || $request->filled('password_dosen')) {
-            // Cari user terkait dosen
-            $user = User::find($dosen->users_id);
-            $user->name = $validatedData['nama_dosen'];
-            $user->email = $validatedData['email_dosen'];
+            // Validasi input dari request
+            $validatedData = $request->validated();
 
-            // Jika password diisi, hash password terlebih dahulu
-            if ($request->filled('password_dosen')) {
-                $user->password = Hash::make($validatedData['password_dosen']);
+            // Cek apakah email atau password perlu diupdate
+            if ($request->filled('email_dosen') || $request->filled('password_dosen')) {
+                // Cari user terkait dosen
+                $user = User::find($dosen->users_id);
+                $user->name = $validatedData['nama_panggilan_dosen'];
+                $user->email = $validatedData['email_dosen'];
+
+                // Jika password diisi, hash password terlebih dahulu
+                if ($request->filled('password_dosen')) {
+                    $user->password = Hash::make($validatedData['password_dosen']);
+                }
+
+                // Simpan perubahan data user
+                $user->save();
             }
 
-            // Simpan perubahan data user
-            $user->save();
+            if ($request->filled('password_dosen')) {
+                // Jika diisi, hash password sebelum disimpan
+                $validatedData['password_dosen'] = Hash::make($validatedData['password_dosen']);
+            } else {
+                // Jika password tidak diubah, gunakan password lama, namun tetap di-hash
+                $validatedData['password_dosen'] = Hash::make($dosen->password_dosen);
+            }
+
+            // Update data dosen dengan data yang telah divalidasi (tanpa password_dosen jika tidak diubah)
+            $dosen->update($validatedData);
+
+            // Add alert notification
+            Alert::create([
+                'title' => 'Data Dosen Diperbarui',
+                'message' => 'Data dosen dengan nama ' . $dosen->nama_dosen . ' telah berhasil diperbarui.',
+                'type' => 'info',
+                'sended_at' => now(),
+                'is_read' => false,
+                'users_id' => auth()->user()->id
+            ]);
+
+            // Add message notification
+            Message::create([
+                'sender' => 'System',
+                'message' => 'Data dosen dengan nama ' . $dosen->nama_dosen . ' telah berhasil diperbarui.',
+                'status' => 'unread',
+                'sended_time' => now(),
+                'users_id' => auth()->user()->id
+            ]);
+
+            // Commit the transaction
+            DB::commit();
+
+            // Redirect or send a response after data is successfully updated
+            return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diperbarui!');
+        } catch (\Exception $e) {
+            // If any error occurs, rollback the transaction
+            DB::rollBack();
+
+            // Optionally, you can log the exception message for debugging
+            Log::error('Error occurred while updating dosen: ' . $e->getMessage());
+
+            return back()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
         }
-        if ($request->filled('password_dosen')) {
-            // Jika diisi, hash password sebelum disimpan
-            $validatedData['password_dosen'] = Hash::make($validatedData['password_dosen']);
-        } else {
-            // Jika password tidak diubah, gunakan password lama, namun tetap di-hash
-            $validatedData['password_dosen'] = Hash::make($dosen->password_dosen);
-        }
-
-        // Update data dosen dengan data yang telah divalidasi (tanpa password_dosen jika tidak diubah)
-        $dosen->update($validatedData);
-        // Tambahkan notifikasi alert
-        Alert::create([
-            'title' => 'Data Dosen Diperbarui',
-            'message' => 'Data dosen dengan nama ' . $dosen->nama_dosen . ' telah berhasil diperbarui.',
-            'type' => 'info',
-            'sended_at' => now(),
-            'is_read' => false,
-            'users_id' => auth()->user()->id
-        ]);
-
-        // Tambahkan pesan baru
-        Message::create([
-            'sender' => 'System',
-            'message' => 'Data dosen dengan nama ' . $dosen->nama_dosen . ' telah berhasil diperbarui.',
-            'status' => 'unread',
-            'sended_time' => now(),
-            'users_id' => auth()->user()->id
-        ]);
-
-        // Redirect atau beri respon setelah data berhasil diupdate
-        return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diperbarui!');
     }
 
 

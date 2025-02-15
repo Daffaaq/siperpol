@@ -23,6 +23,7 @@ class StoreDosenRequest extends FormRequest
     {
         return [
             'nama_dosen' => 'required|string|max:100',
+            'nama_panggilan_dosen' => 'required|string|max:100',
             'nidn_dosen' => 'nullable|string|max:100|unique:dosens,nidn_dosen',
             'nip_dosen' => 'nullable|string|max:100|unique:dosens,nip_dosen',
             'email_dosen' => 'required|email|unique:dosens,email_dosen',
