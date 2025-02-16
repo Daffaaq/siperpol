@@ -7,6 +7,7 @@ use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
 use App\Http\Controllers\Menu\MenuItemController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\RoleAndPermission\AssignPermissionController;
 use App\Http\Controllers\RoleAndPermission\AssignUserToRoleController;
 use App\Http\Controllers\RoleAndPermission\PermissionController;
@@ -39,8 +40,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/alert/read/{id}', [MessageController::class, 'alertAsRead'])->name('alert.read');
 
     Route::prefix('master-management')->group(function () {
+        //jurusan
         Route::resource('jurusan', JurusanController::class);
         Route::post('/jurusan/list', [JurusanController::class, 'list'])->name('jurusan.list');
+
+        //prodi
+        Route::resource('prodi', ProdiController::class);
+        Route::post('/prodi/list', [ProdiController::class, 'list'])->name('prodi.list');
     });
 
     Route::prefix('user-management')->group(function () {

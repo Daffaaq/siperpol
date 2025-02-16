@@ -25,7 +25,8 @@ class JurusanController extends Controller
 
     public function list(Request $request)
     {
-        $jurusan = DB::table('jurusans')->select('nama_jurusan', 'id', 'kode_jurusan', 'is_active');
+        $jurusan = DB::table('jurusans')
+            ->select('nama_jurusan', 'id', 'kode_jurusan', 'is_active');
 
         return DataTables::of($jurusan)
             ->addIndexColumn()
@@ -120,16 +121,15 @@ class JurusanController extends Controller
      */
     public function update(UpdateJurusanRequest $request, $id)
     {
-        // Validasi request
-        $validated = $request->validated();
-
         // Mulai transaksi database
         DB::beginTransaction();
 
         try {
+            $jurusan = Jurusan::findOrFail($id);
+            // Validasi request
+            $validated = $request->validated();
             // Menyimpan data jurusan
-            $jurusan = Jurusan::where('id', $id)->update($validated);
-
+            $jurusan->update($validated);
             // Add alert notification
             Alert::create([
                 'title' => 'Data Jurusan Diperbarui',
@@ -203,17 +203,17 @@ class JurusanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'dosen Deleted Successfully'
+                'message' => 'Jurusan Deleted Successfully'
             ]);
         } catch (\Exception $e) {
             // Rollback transaksi jika ada error
             DB::rollBack();
 
             // Log error untuk debugging (boleh dihilangkan di production)
-            Log::error('Error deleting dosen: ' . $e->getMessage());
+            Log::error('Error deleting jurusan: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete the dosen. Please try again later.'
+                'message' => 'Failed to delete the jurusan. Please try again later.'
             ]);
         }
     }
