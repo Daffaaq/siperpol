@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlertMessageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
 use App\Http\Controllers\Menu\MenuItemController;
 use App\Http\Controllers\MessageController;
@@ -36,6 +37,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/message/read/{id}', [MessageController::class, 'markAsRead'])->name('message.read');
     Route::post('/alert/read/{id}', [MessageController::class, 'alertAsRead'])->name('alert.read');
+
+    Route::prefix('master-management')->group(function () {
+        Route::resource('jurusan', JurusanController::class);
+        Route::post('/jurusan/list', [JurusanController::class, 'list'])->name('jurusan.list');
+    });
 
     Route::prefix('user-management')->group(function () {
         Route::resource('user', UserController::class);
