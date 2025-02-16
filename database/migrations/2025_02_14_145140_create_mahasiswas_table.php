@@ -13,6 +13,20 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_mahasiswa');
+            $table->string('email_mahasiswa');
+            $table->string('password_mahasiswa');
+            $table->text('alamat_mahasiswa');
+            $table->string('nim_mahasiswa');
+            $table->string('no_telepon_mahasiswa')->nullable();
+            $table->enum('jenis_kelamin_mahasiswa', ['L', 'P']);
+            $table->date('tanggal_lahir_mahasiswa');
+            $table->unsignedBigInteger('prodis_id');
+            $table->foreign('prodis_id')->references('id')->on('prodis')->onDelete('cascade');
+            $table->unsignedBigInteger('jurusans_id');
+            $table->foreign('jurusans_id')->references('id')->on('jurusans')->onDelete('cascade');
+            $table->unsignedBigInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

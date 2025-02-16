@@ -21,6 +21,16 @@ class MenuGroupSeeder extends Seeder
                     'permission_name' => 'dashboard',
                 ],
                 [
+                    'name' => 'Master Management', // Menambahkan Master Management setelah Dashboard
+                    'icon' => 'fas fa-briefcase', // Icon untuk Master Management
+                    'permission_name' => 'master.management', // Permission untuk Master Management
+                ],
+                [
+                    'name' => 'Rent Management', // Peminjaman Management yang baru
+                    'icon' => 'fas fa-hand-holding-usd', // Icon yang lebih baik untuk Peminjaman Management
+                    'permission_name' => 'peminjaman.management', // Permission untuk Peminjaman Management
+                ],
+                [
                     'name' => 'Users Management',
                     'icon' => 'fas fa-users',
                     'permission_name' => 'user.management',

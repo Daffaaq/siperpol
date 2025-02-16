@@ -20,6 +20,8 @@ class RoleAndPermissionSeeder extends Seeder
 
         // create permissions
         Permission::create(['name' => 'dashboard']);
+        Permission::create(['name' => 'master.management']);
+        Permission::create(['name' => 'peminjaman.management']);
         Permission::create(['name' => 'user.management']);
         Permission::create(['name' => 'role.permission.management']);
         Permission::create(['name' => 'menu.management']);
@@ -70,6 +72,60 @@ class RoleAndPermissionSeeder extends Seeder
         Permission::create(['name' => 'menu-item.edit']);
         Permission::create(['name' => 'menu-item.destroy']);
 
+        //jurusan
+        Permission::create(['name' => 'jurusan.index']);
+        Permission::create(['name' => 'jurusan.create']);
+        Permission::create(['name' => 'jurusan.edit']);
+        Permission::create(['name' => 'jurusan.destroy']);
+
+        //prodi
+        Permission::create(['name' => 'prodi.index']);
+        Permission::create(['name' => 'prodi.create']);
+        Permission::create(['name' => 'prodi.edit']);
+        Permission::create(['name' => 'prodi.destroy']);
+
+        // Kepala Jurusan
+        Permission::create(['name' => 'kepala-jurusan.index']);
+        Permission::create(['name' => 'kepala-jurusan.create']);
+        Permission::create(['name' => 'kepala-jurusan.edit']);
+        Permission::create(['name' => 'kepala-jurusan.destroy']);
+
+        // Organisasi
+        Permission::create(['name' => 'organisasi.index']);
+        Permission::create(['name' => 'organisasi.create']);
+        Permission::create(['name' => 'organisasi.edit']);
+        Permission::create(['name' => 'organisasi.destroy']);
+
+        // Fasilitas
+        Permission::create(['name' => 'fasilitas.index']);
+        Permission::create(['name' => 'fasilitas.create']);
+        Permission::create(['name' => 'fasilitas.edit']);
+        Permission::create(['name' => 'fasilitas.destroy']);
+
+        // ruang
+        Permission::create(['name' => 'ruang.index']);
+        Permission::create(['name' => 'ruang.create']);
+        Permission::create(['name' => 'ruang.edit']);
+        Permission::create(['name' => 'ruang.destroy']);
+
+        // tipe-dokumen-peminjaman
+        Permission::create(['name' => 'tipe-dokumen-peminjaman.index']);
+        Permission::create(['name' => 'tipe-dokumen-peminjaman.create']);
+        Permission::create(['name' => 'tipe-dokumen-peminjaman.edit']);
+        Permission::create(['name' => 'tipe-dokumen-peminjaman.destroy']);
+
+        // jadwal-tidak-tersedia
+        Permission::create(['name' => 'jadwal-tidak-tersedia.index']);
+        Permission::create(['name' => 'jadwal-tidak-tersedia.create']);
+        Permission::create(['name' => 'jadwal-tidak-tersedia.edit']);
+        Permission::create(['name' => 'jadwal-tidak-tersedia.destroy']);
+
+        //peminjaman-ruang
+        Permission::create(['name' => 'peminjaman-ruang.index']);
+        Permission::create(['name' => 'peminjaman-ruang.create']);
+        Permission::create(['name' => 'peminjaman-ruang.edit']);
+        Permission::create(['name' => 'peminjaman-ruang.destroy']);
+
         //Dosen
         Permission::create(['name' => 'dosen.index']);
         Permission::create(['name' => 'dosen.create']);
@@ -108,6 +164,12 @@ class RoleAndPermissionSeeder extends Seeder
 
         // create mahasiswa
         $role = Role::create(['name' => 'mahasiswa']);
+
+        $role = Role::create(['name' => 'Kajur']);
+
+        $role = Role::create(['name' => 'Bem']);
+        
+        $role = Role::create(['name' => 'Himpunan']);
 
         //assign user id 1 ke super admin
         $user = User::find(1);

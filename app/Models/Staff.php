@@ -23,12 +23,18 @@ class Staff extends Model
         'pendidikan_terakhir_staff',
         'status_kepegawaian_staff',
         'status_kepegawaian_lainnya',
-        'users_id'
+        'users_id',
+        'jurusans_id',
     ];
 
 
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusans_id');
     }
 }

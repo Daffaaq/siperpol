@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('pendidikan_terakhir_dosen')->nullable();
             $table->enum('status_kepegawaian_dosen', ['PNS', 'Honorer', 'Lainnya'])->nullable();
             $table->text('status_kepegawaian_lainnya')->nullable();
+            $table->unsignedBigInteger('jurusans_id')->nullable();
+            $table->foreign('jurusans_id')->references('id')->on('jurusans')->onDelete('cascade');
             $table->unsignedBigInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

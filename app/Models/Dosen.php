@@ -27,6 +27,7 @@ class Dosen extends Model
         'status_kepegawaian_dosen',
         'status_kepegawaian_lainnya',
         'users_id',
+        'jurusans_id',
     ];
 
     // Model Dosen
@@ -40,5 +41,10 @@ class Dosen extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusans_id');
     }
 }
