@@ -4,6 +4,7 @@ use App\Http\Controllers\AlertMessageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JurusanController;
+use App\Http\Controllers\KetuaJurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
 use App\Http\Controllers\Menu\MenuItemController;
 use App\Http\Controllers\MessageController;
@@ -47,6 +48,10 @@ Route::group(['middleware' => ['auth']], function () {
         //prodi
         Route::resource('prodi', ProdiController::class);
         Route::post('/prodi/list', [ProdiController::class, 'list'])->name('prodi.list');
+
+        // ketua-jurusan
+        Route::resource('ketua-jurusan', KetuaJurusanController::class);
+        Route::post('/ketua-jurusan/list', [KetuaJurusanController::class, 'list'])->name('ketua-jurusan.list');
     });
 
     Route::prefix('user-management')->group(function () {

@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kepala_jurusans', function (Blueprint $table) {
+        Schema::create('ketua_jurusans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kepala_jurusan');
-            $table->string('email_kepala_jurusan')->unique();
-            $table->string('password_kepala_jurusan');
+            $table->string('nama_ketua_jurusan');
+            $table->string('nama_pendek_ketua_jurusan');
+            $table->string('nip_ketua_jurusan')->unique();
+            $table->string('email_ketua_jurusan')->unique();
+            $table->string('password_ketua_jurusan');
             $table->unsignedBigInteger('jurusans_id');
             $table->foreign('jurusans_id')->references('id')->on('jurusans')->onDelete('cascade');
+            $table->unsignedBigInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

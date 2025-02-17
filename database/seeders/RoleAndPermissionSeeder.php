@@ -84,11 +84,11 @@ class RoleAndPermissionSeeder extends Seeder
         Permission::create(['name' => 'prodi.edit']);
         Permission::create(['name' => 'prodi.destroy']);
 
-        // Kepala Jurusan
-        Permission::create(['name' => 'kepala-jurusan.index']);
-        Permission::create(['name' => 'kepala-jurusan.create']);
-        Permission::create(['name' => 'kepala-jurusan.edit']);
-        Permission::create(['name' => 'kepala-jurusan.destroy']);
+        // ketua Jurusan
+        Permission::create(['name' => 'ketua-jurusan.index']);
+        Permission::create(['name' => 'ketua-jurusan.create']);
+        Permission::create(['name' => 'ketua-jurusan.edit']);
+        Permission::create(['name' => 'ketua-jurusan.destroy']);
 
         // Organisasi
         Permission::create(['name' => 'organisasi.index']);

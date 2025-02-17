@@ -34,9 +34,9 @@ class MenuItemSeeder extends Seeder
                     'menu_group_id' => 2,
                 ],
                 [
-                    'name' => 'Kepala Jurusan',
-                    'route' => 'master-management/kepala-jurusan',
-                    'permission_name' => 'kepala-jurusan.index',
+                    'name' => 'Ketua Jurusan',
+                    'route' => 'master-management/ketua-jurusan',
+                    'permission_name' => 'ketua-jurusan.index',
                     'menu_group_id' => 2,
                 ],
                 [
