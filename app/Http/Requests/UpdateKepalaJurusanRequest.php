@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateKepalaJurusanRequest extends FormRequest
 {
@@ -21,13 +22,11 @@ class UpdateKepalaJurusanRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('ketua-jurusan'); // Make sure this is correct, check the name of the route parameter
-        // dd($id);
         return [
             'nama_ketua_jurusan' => 'required|string',
             'nama_pendek_ketua_jurusan' => 'required|string',
-            'nip_ketua_jurusan' => 'required|string',
-            'email_ketua_jurusan' => 'required|email',
+            'nip_ketua_jurusan' => 'required|string|' . Rule::unique('ketua_jurusans')->ignore($this->ketua_jurusan),
+            'email_ketua_jurusan' => 'required|email|' . Rule::unique('ketua_jurusans')->ignore($this->ketua_jurusan),
             'password_ketua_jurusan' => 'nullable|string|min:8',
         ];
     }
