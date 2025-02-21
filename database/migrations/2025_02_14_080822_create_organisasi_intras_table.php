@@ -15,10 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('nama_organisasi_intra');
             $table->string('kode_organisasi_intra');
+            $table->string('nama_ketua_umum')->nullable();
+            $table->string('email_ketua_umum')->nullable();
+            $table->string('password_ketua_umum')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->enum('tipe_organisasi_intra', ['jurusan', 'non-jurusan']);
+            $table->enum('tipe_organisasi_intra', ['jurusan', 'non-jurusan', 'lembaga-tinggi']);
             $table->unsignedBigInteger('jurusans_id')->nullable();
             $table->foreign('jurusans_id')->references('id')->on('jurusans')->onDelete('cascade');
+            $table->unsignedBigInteger('users_id')->nullable();
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

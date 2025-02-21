@@ -8,7 +8,7 @@ $menuGroups = \App\Models\MenuGroup::with('menuItems')->get();
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
         <div class="sidebar-brand-icon rotate-n-15">
         </div>
-        <div class="sidebar-brand-text mx-3">TI ROOMS</div>
+        <div class="sidebar-brand-text mx-3">SIPERPOL</div>
     </a>
 
     <!-- Divider -->

@@ -8,6 +8,7 @@ use App\Http\Controllers\KetuaJurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
 use App\Http\Controllers\Menu\MenuItemController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OrganisasiIntraController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\RoleAndPermission\AssignPermissionController;
 use App\Http\Controllers\RoleAndPermission\AssignUserToRoleController;
@@ -52,6 +53,10 @@ Route::group(['middleware' => ['auth']], function () {
         // ketua-jurusan
         Route::resource('ketua-jurusan', KetuaJurusanController::class);
         Route::post('/ketua-jurusan/list', [KetuaJurusanController::class, 'list'])->name('ketua-jurusan.list');
+
+        // organisasi
+        Route::resource('organisasi', OrganisasiIntraController::class);
+        Route::post('/organisasi/list', [OrganisasiIntraController::class, 'list'])->name('organisasi.list');
     });
 
     Route::prefix('user-management')->group(function () {
