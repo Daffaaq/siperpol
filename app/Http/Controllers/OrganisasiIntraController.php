@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrganisasiIntraController extends Controller
@@ -45,8 +46,9 @@ class OrganisasiIntraController extends Controller
      */
     public function create()
     {
+        $roles = Role::all();
         $getJurusan = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
-        return view('organisasi.create', compact('getJurusan'));
+        return view('organisasi.create', compact('getJurusan', 'roles'));
     }
 
     /**
@@ -65,6 +67,10 @@ class OrganisasiIntraController extends Controller
                     'email' => $request->email_ketua_umum,
                     'password' => Hash::make($request->password_ketua_umum), // Only hash if password is present
                 ]);
+                $userRole = Role::where('id', $request->roles)->get();
+
+                // Mengassign role ke user
+                $user->syncRoles($userRole);
             }
 
             // Set password for OrganisasiIntra if password is provided, otherwise leave it null
@@ -107,11 +113,14 @@ class OrganisasiIntraController extends Controller
         // Get the current OrganisasiIntra data by its ID
         $organisasi = OrganisasiIntra::findOrFail($id);
 
+        $user = User::find($organisasi->users_id);
+
         // Get the list of jurusans
         $getJurusan = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
+        $roles = Role::all();
 
         // Return the edit view with the current data
-        return view('organisasi.edit', compact('organisasi', 'getJurusan'));
+        return view('organisasi.edit', compact('organisasi', 'getJurusan', 'roles', 'user'));
     }
 
 
@@ -137,6 +146,10 @@ class OrganisasiIntraController extends Controller
                         'email' => $request->email_ketua_umum,
                         'password' => Hash::make($request->password_ketua_umum), // Only hash if password is present
                     ]);
+                    $userRole = Role::where('id', $request->roles)->get();
+
+                    // Mengassign role ke user
+                    $user->syncRoles($userRole);
                 }
             }
 

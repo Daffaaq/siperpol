@@ -30,6 +30,7 @@ class StoreOrganisasiRequest extends FormRequest
             'nama_ketua_umum' => 'nullable|string',
             'email_ketua_umum' => 'nullable|email',
             'password_ketua_umum' => 'nullable|string|min:8',
+            'roles' => 'nullable',
         ];
     }
 }

@@ -64,7 +64,8 @@
                         <label for="tipe_organisasi_intra">Tipe Organisasi Intra:</label>
                         <select name="tipe_organisasi_intra" id="tipe_organisasi_intra"
                             class="form-control @error('tipe_organisasi_intra') is-invalid @enderror">
-                            <option value="jurusan" {{ old('tipe_organisasi_intra', $organisasi->tipe_organisasi_intra) == 'jurusan' ? 'selected' : '' }}>
+                            <option value="jurusan"
+                                {{ old('tipe_organisasi_intra', $organisasi->tipe_organisasi_intra) == 'jurusan' ? 'selected' : '' }}>
                                 Jurusan</option>
                             <option value="non-jurusan"
                                 {{ old('tipe_organisasi_intra', $organisasi->tipe_organisasi_intra) == 'non-jurusan' ? 'selected' : '' }}>
@@ -81,7 +82,8 @@
                     </div>
 
                     <!-- Jurusan -->
-                    <div class="form-group" id="jurusan-group" style="{{ $organisasi->tipe_organisasi_intra == 'jurusan' ? 'display:block;' : 'display:none;' }}">
+                    <div class="form-group" id="jurusan-group"
+                        style="{{ $organisasi->tipe_organisasi_intra == 'jurusan' ? 'display:block;' : 'display:none;' }}">
                         <label for="jurusans_id">Jurusan:</label>
                         <select name="jurusans_id" id="jurusans_id"
                             class="form-control @error('jurusans_id') is-invalid @enderror">
@@ -163,6 +165,23 @@
                             </div>
                         @enderror
                     </div>
+
+                    <div class="form-group">
+                        <label for="role">Roles:</label>
+                        <select name="roles" id="role" class="form-control select2">
+                            @foreach ($roles as $role)
+                                <option {{ $user->roles()->find($role->id) ? 'selected' : '' }}
+                                    value="{{ $role->id }}">
+                                    {{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('roles')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
 
                     <!-- Submit Button -->
                     <div class="row mt-3">

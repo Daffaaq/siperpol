@@ -161,6 +161,20 @@
                         @enderror
                     </div>
 
+                    <div class="form-group">
+                        <label for="role">Roles:</label>
+                        <select name="roles" id="role" class="form-control select2">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
                     <!-- Submit Button -->
                     <div class="row mt-3">
                         <div class="col-md-12">
