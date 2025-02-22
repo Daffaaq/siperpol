@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlertMessageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\FasilitasController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KetuaJurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
@@ -57,6 +58,10 @@ Route::group(['middleware' => ['auth']], function () {
         // organisasi
         Route::resource('organisasi', OrganisasiIntraController::class);
         Route::post('/organisasi/list', [OrganisasiIntraController::class, 'list'])->name('organisasi.list');
+
+        // fasilitas
+        Route::resource('fasilitas', FasilitasController::class);
+        Route::post('/fasilitas/list', [FasilitasController::class, 'list'])->name('fasilitas.list');
     });
 
     Route::prefix('user-management')->group(function () {
