@@ -15,6 +15,7 @@ use App\Http\Controllers\RoleAndPermission\AssignPermissionController;
 use App\Http\Controllers\RoleAndPermission\AssignUserToRoleController;
 use App\Http\Controllers\RoleAndPermission\PermissionController;
 use App\Http\Controllers\RoleAndPermission\RoleController;
+use App\Http\Controllers\RuangController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TipeDokumenPeminjamanController;
 use App\Http\Controllers\UserController;
@@ -65,6 +66,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/fasilitas/list', [FasilitasController::class, 'list'])->name('fasilitas.list');
 
         //ruang
+        Route::resource('ruang', RuangController::class);
+        Route::post('/ruang/list', [RuangController::class, 'list'])->name('ruang.list');
 
         //tipe-dokumen-peminjaman
         Route::resource('tipe-dokumen-peminjaman', TipeDokumenPeminjamanController::class);

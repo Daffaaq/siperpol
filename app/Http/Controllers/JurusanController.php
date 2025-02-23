@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertAndMessagesEvent;
 use App\Http\Requests\StoreJurusanRequest;
 use App\Http\Requests\UpdateJurusanRequest;
 use App\Models\Alert;
@@ -63,24 +64,12 @@ class JurusanController extends Controller
             // Menyimpan data jurusan
             Jurusan::create($validated);
 
-            // Add alert notification
-            Alert::create([
-                'title' => 'Data Jurusan Ditambahkan',
-                'message' => 'Jurusan baru telah berhasil ditambahkan.',
-                'type' => 'info',
-                'sended_at' => now(),
-                'is_read' => false,
-                'users_id' => auth()->user()->id
-            ]);
-
-            // Create message for the system
-            Message::create([
-                'sender' => 'System',
-                'message' => 'Jurusan baru telah berhasil ditambahkan.',
-                'status' => 'unread',
-                'sended_time' => now(),
-                'users_id' => auth()->user()->id
-            ]);
+            // Dispatch the event for alert and messages
+            event(new AlertAndMessagesEvent(
+                'Data Jurusan Ditambahkan',  // Title
+                'Jurusan baru telah berhasil ditambahkan.',  // Message
+                auth()->user()->id  // User ID
+            ));
 
             // Commit transaksi jika berhasil
             DB::commit();
@@ -130,24 +119,11 @@ class JurusanController extends Controller
             $validated = $request->validated();
             // Menyimpan data jurusan
             $jurusan->update($validated);
-            // Add alert notification
-            Alert::create([
-                'title' => 'Data Jurusan Diperbarui',
-                'message' => 'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil diperbarui.',
-                'type' => 'info',
-                'sended_at' => now(),
-                'is_read' => false,
-                'users_id' => auth()->user()->id
-            ]);
-
-            // Add message notification
-            Message::create([
-                'sender' => 'System',
-                'message' => 'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil diperbarui.',
-                'status' => 'unread',
-                'sended_time' => now(),
-                'users_id' => auth()->user()->id
-            ]);
+            event(new AlertAndMessagesEvent(
+                'Data Jurusan Diperbarui',  // Title
+                'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil diperbarui.',  // Message
+                auth()->user()->id  // User ID
+            ));
 
             // Commit transaksi jika berhasil
             DB::commit();
@@ -179,24 +155,12 @@ class JurusanController extends Controller
             // Hapus data dosen itu sendiri
             $jurusan->delete();
 
-            // Tambahkan notifikasi alert bahwa data dosen dihapus
-            Alert::create([
-                'title' => 'Data Jurusan Dihapus',
-                'message' => 'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil dihapus.',
-                'type' => 'info',
-                'sended_at' => now(),
-                'is_read' => false,
-                'users_id' => auth()->user()->id
-            ]);
-
-            // Tambahkan pesan baru
-            Message::create([
-                'sender' => 'System',
-                'message' => 'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil dihapus.',
-                'status' => 'unread',
-                'sended_time' => now(),
-                'users_id' => auth()->user()->id
-            ]);
+            // Dispatch the event for alert and messages
+            event(new AlertAndMessagesEvent(
+                'Data Jurusan Dihapus',  // Title
+                'Data jurusan dengan nama ' . $jurusan->nama_jurusan . ' telah berhasil dihapus.',  // Message
+                auth()->user()->id  // User ID
+            ));
 
             // Commit transaksi jika semua operasi berhasil
             DB::commit();
