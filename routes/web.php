@@ -4,6 +4,7 @@ use App\Http\Controllers\AlertMessageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\FasilitasController;
+use App\Http\Controllers\JadwalTidakTersediaController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KetuaJurusanController;
 use App\Http\Controllers\Menu\MenuGroupController;
@@ -72,6 +73,11 @@ Route::group(['middleware' => ['auth']], function () {
         //tipe-dokumen-peminjaman
         Route::resource('tipe-dokumen-peminjaman', TipeDokumenPeminjamanController::class);
         Route::post('/tipe-dokumen-peminjaman/list', [TipeDokumenPeminjamanController::class, 'list'])->name('tipe-dokumen-peminjaman.list');
+
+        //jadwal-tidak-tersedia
+        Route::resource('jadwal-tidak-tersedia', JadwalTidakTersediaController::class);
+        Route::post('/jadwal-tidak-tersedia/list', [JadwalTidakTersediaController::class, 'list'])->name('jadwal-tidak-tersedia.list');
+        Route::get('/jadwal-tidak-tersedia/get-ruang/{id}', [JadwalTidakTersediaController::class, 'getRuang'])->name('jadwal-tidak-tersedia.get-ruang');
     });
 
     Route::prefix('user-management')->group(function () {

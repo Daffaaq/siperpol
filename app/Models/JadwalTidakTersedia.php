@@ -10,7 +10,7 @@ class JadwalTidakTersedia extends Model
     use HasFactory;
 
     // Nama tabel
-    protected $table = 'jadwal_tidak_tersedia';
+    protected $table = 'jadwal_tidak_tersedias';
 
     // Kolom yang bisa diisi
     protected $fillable = [
