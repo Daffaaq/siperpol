@@ -132,10 +132,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        <small class="form-text text-muted mb-1">Pilih minimal satu fasilitas.</small>
                         @error('fasilitas_id')
-                            <div class="invalid-feedback">
                                 {{ $message }}
-                            </div>
                         @enderror
                     </div>
 
@@ -194,24 +193,29 @@
         .position-relative {
             position: relative;
         }
+
+        small.form-text {
+            margin-top: -1.5rem;
+            /* Mengurangi jarak atas */
+        }
     </style>
 @endpush
 
 @push('styles')
-<!-- Add this in the head section for Choices.js -->
-<link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+    <!-- Add this in the head section for Choices.js -->
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
 @endpush
 
 @push('scripts')
-<!-- Add this script before your closing body tag -->
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Choices.js on the select element
-        new Choices('.choices', {
-            removeItemButton: true,
-            placeholderValue: 'Select Fasilitas'
+    <!-- Add this script before your closing body tag -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Choices.js on the select element
+            new Choices('.choices', {
+                removeItemButton: true,
+                placeholderValue: 'Select Fasilitas'
+            });
         });
-    });
-</script>
+    </script>
 @endpush
