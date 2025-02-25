@@ -29,6 +29,11 @@ class JadwalTidakTersediaController extends Controller
             ->leftJoin('jurusans', 'ruangs.jurusans_id', '=', 'jurusans.id')
             ->select('jadwal_tidak_tersedias.id', 'jadwal_tidak_tersedias.tanggal_mulai', 'jadwal_tidak_tersedias.tanggal_selesai', 'ruangs.nama_ruang as ruang_name', 'jurusans.nama_jurusan as jurusan_name');
 
+        // Apply filter if jurusan_id is provided
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $jadwalTidakTersedia->where('ruangs.jurusans_id', $request->jurusan_id);
+        }
+
         return DataTables::of($jadwalTidakTersedia)
             ->addIndexColumn()
             ->make(true);
@@ -39,8 +44,10 @@ class JadwalTidakTersediaController extends Controller
      */
     public function index()
     {
-        return view('jadwal-tidak-tersedia.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        return view('jadwal-tidak-tersedia.index', compact('jurusans'));
     }
+
 
     /**
      * Show the form for creating a new resource.

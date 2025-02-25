@@ -13,7 +13,16 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Filter by Jurusan on the left -->
+                    <select id="jurusanFilter" class="form-control" style="width: 200px;">
+                        <option value="">Pilih Jurusan</option>
+                        @foreach ($jurusans as $jurusan)
+                            <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                        @endforeach
+                    </select>
+
+                    <!-- Create New Prodi button on the right -->
                     <a href="{{ route('prodi.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                         <i class="fas fa-plus fa-sm text-white-50"></i> Create New Prodi
                     </a>
@@ -80,8 +89,9 @@
                     url: '{{ route('prodi.list') }}',
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    data: function(d) {
+                        d._token = '{{ csrf_token() }}';
+                        d.jurusan_id = $('#jurusanFilter').val(); // Send selected jurusan_id
                     }
                 },
                 columns: [{
@@ -119,16 +129,16 @@
                             let editUrl = `/master-management/prodi/${data}/edit`;
 
                             return `
-                                <a href="${showUrl}" class="btn icon btn-sm btn-info">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="${editUrl}" class="btn icon btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            `;
+                        <a href="${showUrl}" class="btn icon btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="${editUrl}" class="btn icon btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
                         }
                     }
                 ],
@@ -138,19 +148,12 @@
                 }
             });
 
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '{{ session('success') }}',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
-            @endif
+            // Redraw the table when the jurusan filter changes
+            $('#jurusanFilter').change(function() {
+                dataMaster.ajax.reload();
+            });
         });
+
 
         function confirmDelete(id) {
             Swal.fire({

@@ -15,7 +15,13 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <select id="jurusanFilter" class="form-control" style="width: 200px;">
+                        <option value="">-- Filter by Jurusan --</option>
+                        @foreach ($jurusans as $jurusan)
+                            <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                        @endforeach
+                    </select>
                     <a href="{{ route('ketua-jurusan.create') }}"
                         class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                         <i class="fas fa-plus fa-sm text-white-50"></i> Create New Ketua Jurusan
@@ -82,8 +88,10 @@
                     url: '{{ route('ketua-jurusan.list') }}',
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    data: function(d) {
+                        // Send filter data along with other parameters
+                        d._token = '{{ csrf_token() }}';
+                        d.jurusan_id = $('#jurusanFilter').val(); // Jurusan filter value
                     }
                 },
                 columns: [{
@@ -131,6 +139,11 @@
                 drawCallback: function(settings) {
                     $('a').tooltip();
                 }
+            });
+
+            // Reload the table when the filter is changed
+            $('#jurusanFilter').change(function() {
+                dataMaster.ajax.reload();
             });
 
             @if (session('success'))

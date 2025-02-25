@@ -25,10 +25,30 @@ class OrganisasiIntraController extends Controller
 
     public function list(Request $request)
     {
-        $oki = DB::table('organisasi_intras')->leftJoin('jurusans', 'organisasi_intras.jurusans_id', '=', 'jurusans.id')
-            ->select('organisasi_intras.id', 'organisasi_intras.nama_organisasi_intra', 'organisasi_intras.is_active', 'organisasi_intras.kode_organisasi_intra', 'organisasi_intras.tipe_organisasi_intra', 'jurusans.nama_jurusan', 'organisasi_intras.users_id')
-            ->get();
-        // dd($oki);
+        $query = DB::table('organisasi_intras')
+            ->leftJoin('jurusans', 'organisasi_intras.jurusans_id', '=', 'jurusans.id')
+            ->select(
+                'organisasi_intras.id',
+                'organisasi_intras.nama_organisasi_intra',
+                'organisasi_intras.is_active',
+                'organisasi_intras.kode_organisasi_intra',
+                'organisasi_intras.tipe_organisasi_intra',
+                'jurusans.nama_jurusan',
+                'organisasi_intras.users_id'
+            );
+
+        // Filter by jurusan_id if provided
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $query->where('organisasi_intras.jurusans_id', $request->jurusan_id);
+        }
+
+        // Filter by tipe_organisasi_intra if provided
+        if ($request->has('tipe_organisasi_intra') && $request->tipe_organisasi_intra != '') {
+            $query->where('organisasi_intras.tipe_organisasi_intra', $request->tipe_organisasi_intra);
+        }
+
+        $oki = $query->get();
+
         return DataTables::of($oki)
             ->addIndexColumn()
             ->make(true);
@@ -38,8 +58,11 @@ class OrganisasiIntraController extends Controller
      */
     public function index()
     {
-        return view('organisasi.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        $tipeOrganisasi = ['jurusan', 'non-jurusan', 'lembaga-tinggi'];  // Enum values for tipe_organisasi_intra
+        return view('organisasi.index', compact('jurusans', 'tipeOrganisasi'));
     }
+
 
     /**
      * Show the form for creating a new resource.

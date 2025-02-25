@@ -15,12 +15,23 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('jadwal-tidak-tersedia.create') }}"
-                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Jadwal Tidak Tersedia
-                    </a>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex">
+                        <select id="jurusanFilter" class="form-control" style="width: 200px;">
+                            <option value="">-- Select Jurusan --</option>
+                            @foreach ($jurusans as $jurusan)
+                                <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <a href="{{ route('jadwal-tidak-tersedia.create') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Jadwal Tidak Tersedia
+                        </a>
+                    </div>
                 </div>
+
                 <div class="table-responsive">
                     <table class="table table-bordered" id="JadwalTidakTersediaTables" width="100%" cellspacing="0">
                         <thead>
@@ -83,8 +94,9 @@
                     url: '{{ route('jadwal-tidak-tersedia.list') }}',
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    data: function(d) {
+                        d.jurusan_id = $('#jurusanFilter').val(); // Mengirimkan jurusan_id ke server
+                        d._token = '{{ csrf_token() }}';
                     }
                 },
                 columns: [{
@@ -118,13 +130,13 @@
                             let editUrl = `/master-management/jadwal-tidak-tersedia/${data}/edit`;
 
                             return `
-                                <a href="${editUrl}" class="btn icon btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            `;
+                        <a href="${editUrl}" class="btn icon btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
                         }
                     }
                 ],
@@ -132,6 +144,11 @@
                 drawCallback: function(settings) {
                     $('a').tooltip();
                 }
+            });
+
+            // Apply filter when a new jurusan is selected
+            $('#jurusanFilter').change(function() {
+                dataMaster.ajax.reload();
             });
 
             @if (session('success'))
@@ -147,6 +164,7 @@
                 });
             @endif
         });
+
 
         function confirmDelete(id) {
             Swal.fire({

@@ -13,11 +13,27 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('organisasi.create') }}"
-                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Organisasi
-                    </a>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex">
+                        <select id="jurusanFilter" class="form-control mr-2">
+                            <option value="">Pilih Jurusan</option>
+                            @foreach ($jurusans as $jurusan)
+                                <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                            @endforeach
+                        </select>
+                        <select id="tipeFilter" class="form-control">
+                            <option value="">Pilih Tipe Organisasi</option>
+                            @foreach ($tipeOrganisasi as $tipe)
+                                <option value="{{ $tipe }}">{{ ucfirst(str_replace('-', ' ', $tipe)) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <a href="{{ route('organisasi.create') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Organisasi
+                        </a>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="OrganisasiTables" width="100%" cellspacing="0">
@@ -75,18 +91,22 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $(document).ready(function() {
+            // Initialize DataTable with an ajax filter for jurusan and tipe_organisasi_intra
             var dataMaster = $('#OrganisasiTables').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('organisasi.list') }}',
                     type: 'POST',
+                    data: function(d) {
+                        d.jurusan_id = $('#jurusanFilter').val();  // Send jurusan_id filter along with request
+                        d.tipe_organisasi_intra = $('#tipeFilter').val(); // Send tipe_organisasi_intra filter along with request
+                        d._token = '{{ csrf_token() }}';
+                    },
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    }
                 },
-                columns: [{
+                columns: [
+                    {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
@@ -104,25 +124,20 @@
                         data: 'tipe_organisasi_intra',
                         name: 'tipe_organisasi_intra',
                         render: function(data) {
-                            // Create a badge with the corresponding color based on the value of 'tipe_organisasi_intra'
                             var badgeClass = '';
                             var badgeText = '';
 
                             if (data == 'jurusan') {
-                                badgeClass =
-                                    'badge bg-success text-white'; // Green for 'Jurusan' with white text
+                                badgeClass = 'badge bg-success text-white';
                                 badgeText = 'Jurusan';
                             } else if (data == 'non-jurusan') {
-                                badgeClass =
-                                    'badge bg-primary text-white'; // Blue for 'Non-Jurusan' with white text
+                                badgeClass = 'badge bg-primary text-white';
                                 badgeText = 'Non-Jurusan';
                             } else if (data == 'lembaga-tinggi') {
-                                badgeClass =
-                                    'badge bg-danger text-white'; // Red for 'Lembaga-Tinggi' with white text
+                                badgeClass = 'badge bg-danger text-white';
                                 badgeText = 'Lembaga-Tinggi';
                             }
 
-                            // Return the badge with the appropriate color
                             return '<span class="' + badgeClass + '">' + badgeText + '</span>';
                         }
                     },
@@ -172,6 +187,11 @@
                 }
             });
 
+            // Apply filters when a new jurusan or tipe is selected
+            $('#jurusanFilter, #tipeFilter').change(function() {
+                dataMaster.ajax.reload();
+            });
+
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -218,7 +238,6 @@
                                     timerProgressBar: true,
                                 });
                                 $('#OrganisasiTables').DataTable().ajax.reload();
-                                window.location.reload();
                             } else {
                                 Swal.fire({
                                     icon: 'error',

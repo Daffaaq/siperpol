@@ -25,11 +25,18 @@ class KetuaJurusanController extends Controller
         $this->middleware('permission:ketua-jurusan.destroy')->only('destroy');
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $ketuaJurusan = DB::table('ketua_jurusans')
+        $query = DB::table('ketua_jurusans')
             ->join('jurusans', 'ketua_jurusans.jurusans_id', '=', 'jurusans.id')
             ->select('ketua_jurusans.id', 'ketua_jurusans.email_ketua_jurusan', 'ketua_jurusans.nama_ketua_jurusan', 'jurusans.nama_jurusan');
+
+        // Apply the filter if a jurusan ID is provided
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $query->where('ketua_jurusans.jurusans_id', $request->jurusan_id);
+        }
+
+        $ketuaJurusan = $query->get();
         return DataTables::of($ketuaJurusan)
             ->addIndexColumn()
             ->make(true);
@@ -39,7 +46,8 @@ class KetuaJurusanController extends Controller
      */
     public function index()
     {
-        return view('ketua-jurusan.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        return view('ketua-jurusan.index', compact('jurusans'));
     }
 
     /**

@@ -25,21 +25,29 @@ class RuangController extends Controller
 
     public function list(Request $request)
     {
-        $ruang = DB::table('ruangs')
-            ->leftJoin('jurusans', 'ruangs.jurusans_id', '=', 'jurusans.id')
-            ->select('ruangs.id', 'ruangs.nama_ruang', 'ruangs.kode_ruang', 'ruangs.is_active', 'jurusans.nama_jurusan')
-            ->get();
+        $query = DB::table('ruangs')
+        ->leftJoin('jurusans', 'ruangs.jurusans_id', '=', 'jurusans.id')
+        ->select('ruangs.id', 'ruangs.nama_ruang', 'ruangs.kode_ruang', 'ruangs.is_active', 'jurusans.nama_jurusan');
+
+        // Menambahkan filter jika ada jurusan_id
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $query->where('ruangs.jurusans_id', $request->jurusan_id);
+        }
+
+        $ruang = $query->get();
 
         return DataTables::of($ruang)
             ->addIndexColumn()
             ->make(true);
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('ruang.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        return view('ruang.index', compact('jurusans'));
     }
 
     /**

@@ -164,6 +164,7 @@
                     <div class="form-group">
                         <label for="role">Roles:</label>
                         <select name="roles" id="role" class="form-control select2">
+                            <option value="">-- Pilih Role --</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
                             @endforeach

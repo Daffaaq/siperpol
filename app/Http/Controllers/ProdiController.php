@@ -27,19 +27,27 @@ class ProdiController extends Controller
     {
         $prodi = DB::table('prodis')
             ->leftJoin('jurusans', 'prodis.jurusans_id', '=', 'jurusans.id')
-            ->select('prodis.id', 'prodis.nama_prodi', 'prodis.kode_prodi', 'prodis.is_active', 'jurusans.nama_jurusan')
-            ->get();
+            ->select('prodis.id', 'prodis.nama_prodi', 'prodis.kode_prodi', 'prodis.is_active', 'jurusans.nama_jurusan');
+
+        // Apply filtering by jurusan_id if available
+        if ($request->has('jurusan_id') && !empty($request->jurusan_id)) {
+            $prodi = $prodi->where('prodis.jurusans_id', $request->jurusan_id);
+        }
+
+        $prodi = $prodi->get();
 
         return DataTables::of($prodi)
             ->addIndexColumn()
             ->make(true);
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('prodi.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        return view('prodi.index', compact('jurusans'));
     }
 
     /**

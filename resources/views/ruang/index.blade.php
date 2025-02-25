@@ -13,7 +13,13 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <select id="jurusanFilter" class="form-control" style="width: 200px;">
+                        <option value="">Pilih Jurusan</option>
+                        @foreach ($jurusans as $jurusan)
+                            <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                        @endforeach
+                    </select>
                     <a href="{{ route('ruang.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                         <i class="fas fa-plus fa-sm text-white-50"></i> Create New Ruang
                     </a>
@@ -73,84 +79,91 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $(document).ready(function() {
-            var dataMaster = $('#RuangTables').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route('ruang.list') }}',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    }
-                },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'nama_ruang',
-                        name: 'nama_ruang'
-                    },
-                    {
-                        data: 'kode_ruang',
-                        name: 'kode_ruang'
-                    },
-                    {
-                        data: 'nama_jurusan',
-                        name: 'nama_jurusan'
-                    },
-                    {
-                        data: 'is_active',
-                        name: 'is_active',
-                        render: function(data) {
-                            return data == 1 ? 'Active' : 'Inactive';
-                        }
-                    },
-                    {
-                        data: 'id',
-                        name: 'id',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data) {
-                            let showUrl = `/master-management/ruang/${data}`;
-                            let editUrl = `/master-management/ruang/${data}/edit`;
-
-                            return ` 
-                                <a href="${showUrl}" class="btn icon btn-sm btn-info">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="${editUrl}" class="btn icon btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            `;
-                        }
-                    }
-                ],
-                autoWidth: false,
-                drawCallback: function(settings) {
-                    $('a').tooltip();
+    var dataMaster = $('#RuangTables').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{{ route('ruang.list') }}',
+            type: 'POST',
+            dataType: 'json',
+            data: function(d) {
+                d._token = '{{ csrf_token() }}';
+                d.jurusan_id = $('#jurusanFilter').val(); // Mengirimkan filter jurusan
+            }
+        },
+        columns: [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'nama_ruang',
+                name: 'nama_ruang'
+            },
+            {
+                data: 'kode_ruang',
+                name: 'kode_ruang'
+            },
+            {
+                data: 'nama_jurusan',
+                name: 'nama_jurusan'
+            },
+            {
+                data: 'is_active',
+                name: 'is_active',
+                render: function(data) {
+                    return data == 1 ? 'Active' : 'Inactive';
                 }
-            });
+            },
+            {
+                data: 'id',
+                name: 'id',
+                orderable: false,
+                searchable: false,
+                render: function(data) {
+                    let showUrl = `/master-management/ruang/${data}`;
+                    let editUrl = `/master-management/ruang/${data}/edit`;
 
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '{{ session('success') }}',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
-            @endif
+                    return ` 
+                        <a href="${showUrl}" class="btn icon btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="${editUrl}" class="btn icon btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
+                }
+            }
+        ],
+        autoWidth: false,
+        drawCallback: function(settings) {
+            $('a').tooltip();
+        }
+    });
+
+    // Menambahkan event listener untuk dropdown filter jurusan
+    $('#jurusanFilter').change(function() {
+        dataMaster.ajax.reload(); // Memuat ulang data dengan filter baru
+    });
+
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
         });
+    @endif
+});
+
 
         function confirmDelete(id) {
             Swal.fire({
