@@ -23,6 +23,10 @@
                         </select>
                     </div>
                     <div>
+                        <a href="{{ route('dosen.show-import') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-upload fa-sm text-white-50"></i> Dosen Import
+                        </a>
                         <a href="{{ route('dosen.create') }}"
                             class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                             <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dosen

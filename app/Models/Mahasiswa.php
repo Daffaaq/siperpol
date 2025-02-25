@@ -23,7 +23,6 @@ class Mahasiswa extends Model
         'jenis_kelamin_mahasiswa',
         'tanggal_lahir_mahasiswa',
         'prodis_id',  // Foreign key ke tabel prodis
-        'jurusans_id',  // Foreign key ke tabel jurusans
         'users_id',  // Foreign key ke tabel users
     ];
 
@@ -31,12 +30,6 @@ class Mahasiswa extends Model
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'prodis_id');
-    }
-
-    // Relasi dengan model Jurusan
-    public function jurusan()
-    {
-        return $this->belongsTo(Jurusan::class, 'jurusans_id');
     }
 
     // Relasi dengan model User

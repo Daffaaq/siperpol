@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertAndMessagesEvent;
 use App\Http\Requests\StoreDosenRequest;
 use App\Http\Requests\UpdateDosenRequest;
 use App\Models\Alert;
@@ -13,6 +14,9 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\DosenImport;
+use App\Jobs\ImportDosenJob;
 
 class DosenController extends Controller
 {
@@ -271,4 +275,38 @@ class DosenController extends Controller
             ]);
         }
     }
+
+    public function showImport()
+    {
+        // Mengambil data jurusan untuk dropdown
+        $jurusans = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
+        // return view('dosen.create', compact('jurusans'));
+        return view('dosen.import', compact('jurusans'));
+    }
+
+    public function import(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'jurusan_id' => 'required|exists:jurusans,id',
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            // Ambil file dan jurusan_id
+            $file = $request->file('file');
+            $jurusan_id = $request->jurusan_id;
+
+            // Simpan file di storage dan dapatkan path-nya
+            $filePath = $file->store('uploads/dosen');  // Menyimpan file di direktori 'uploads/dosen'
+
+            // Dispatch job ke queue (sync)
+            ImportDosenJob::dispatch($filePath, $jurusan_id);
+
+            return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diimport!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        }
+    }
+
 }

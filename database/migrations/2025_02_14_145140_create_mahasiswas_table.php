@@ -23,8 +23,6 @@ return new class extends Migration
             $table->date('tanggal_lahir_mahasiswa');
             $table->unsignedBigInteger('prodis_id');
             $table->foreign('prodis_id')->references('id')->on('prodis')->onDelete('cascade');
-            $table->unsignedBigInteger('jurusans_id');
-            $table->foreign('jurusans_id')->references('id')->on('jurusans')->onDelete('cascade');
             $table->unsignedBigInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

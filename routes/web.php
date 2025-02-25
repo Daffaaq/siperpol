@@ -87,6 +87,8 @@ Route::group(['middleware' => ['auth']], function () {
         //dosen
         Route::resource('dosen', DosenController::class);
         Route::post('/dosen/list', [DosenController::class, 'list'])->name('dosen.list');
+        Route::get('/import-dosen', [DosenController::class, 'showImport'])->name('dosen.show-import');
+        Route::post('/import-dosen', [DosenController::class, 'import'])->name('dosen.import');
 
         //staff
         Route::resource('staff', StaffController::class);
