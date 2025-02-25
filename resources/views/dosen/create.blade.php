@@ -24,6 +24,25 @@
                     <div class="row">
                         <!-- Left Column (6 fields) -->
                         <div class="col-md-6">
+                            <!-- Jurusan -->
+                            <div class="form-group">
+                                <label for="jurusans_id">Jurusan: <span class="text-danger">*</span></label>
+                                <select name="jurusans_id" id="jurusans_id"
+                                    class="form-control @error('jurusans_id') is-invalid @enderror">
+                                    <option value="">Pilih Jurusan</option>
+                                    @foreach ($jurusans as $jurusan)
+                                        <option value="{{ $jurusan->id }}"
+                                            {{ old('jurusans_id') == $jurusan->id ? 'selected' : '' }}>
+                                            {{ $jurusan->nama_jurusan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusans_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                             <!-- Nama Dosen -->
                             <div class="form-group">
                                 <label for="nama_dosen">Nama Dosen: <span class="text-danger">*</span></label>
@@ -92,7 +111,8 @@
                             <!-- Telepon Dosen -->
                             <div class="form-group">
                                 <label for="no_telepon_dosen">Telepon Dosen:</label>
-                                <input type="text" name="no_telepon_dosen" id="no_telepon_dosen" placeholder="Telepon Dosen"
+                                <input type="text" name="no_telepon_dosen" id="no_telepon_dosen"
+                                    placeholder="Telepon Dosen"
                                     class="form-control @error('no_telepon_dosen') is-invalid @enderror"
                                     value="{{ old('no_telepon_dosen') }}">
                                 @error('no_telepon_dosen')
@@ -107,8 +127,10 @@
                         <div class="col-md-6">
                             <!-- Nama Panggilan Dosen -->
                             <div class="form-group">
-                                <label for="nama_panggilan_dosen">Nama PanggilanDosen: <span class="text-danger">*</span></label>
-                                <input type="text" name="nama_panggilan_dosen" id="nama_panggilan_dosen" placeholder="Nama Dosen"
+                                <label for="nama_panggilan_dosen">Nama PanggilanDosen: <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="nama_panggilan_dosen" id="nama_panggilan_dosen"
+                                    placeholder="Nama Dosen"
                                     class="form-control @error('nama_panggilan_dosen') is-invalid @enderror"
                                     value="{{ old('nama_panggilan_dosen') }}">
                                 @error('nama_panggilan_dosen')
@@ -147,7 +169,8 @@
 
                             <!-- Pendidikan Terakhir Dosen -->
                             <div class="form-group">
-                                <label for="pendidikan_terakhir_dosen">Pendidikan Terakhir Dosen: <span class="text-danger">*</span></label>
+                                <label for="pendidikan_terakhir_dosen">Pendidikan Terakhir Dosen: <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" name="pendidikan_terakhir_dosen" id="pendidikan_terakhir_dosen"
                                     placeholder="Pendidikan Terakhir Dosen"
                                     class="form-control @error('pendidikan_terakhir_dosen') is-invalid @enderror"

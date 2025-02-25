@@ -28,18 +28,27 @@ class DosenController extends Controller
     public function list(Request $request)
     {
         $dosen = DB::table('dosens')
-            ->select('id', 'nama_dosen', 'email_dosen', 'jenis_kelamin_dosen');
+            ->leftJoin('jurusans', 'dosens.jurusans_id', '=', 'jurusans.id')
+            ->select('dosens.id', 'dosens.nama_dosen', 'dosens.email_dosen', 'dosens.jenis_kelamin_dosen', 'jurusans.nama_jurusan');
+
+        // Apply filter if jurusan_id is provided
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $dosen->where('dosens.jurusans_id', $request->jurusan_id);
+        }
 
         return DataTables::of($dosen)
             ->addIndexColumn()
             ->make(true);
     }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dosen.index');
+        $jurusans = DB::table('jurusans')->select('nama_jurusan', 'id')->get();
+        return view('dosen.index', compact('jurusans'));
     }
 
     /**
@@ -47,7 +56,8 @@ class DosenController extends Controller
      */
     public function create()
     {
-        return view('dosen.create');
+        $jurusans = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
+        return view('dosen.create', compact('jurusans'));
     }
 
     /**
@@ -124,8 +134,10 @@ class DosenController extends Controller
      */
     public function edit(Dosen $dosen)
     {
+        $jurusans = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
         return view('dosen.edit')
-            ->with('dosen', $dosen);
+            ->with('dosen', $dosen)
+            ->with('jurusans', $jurusans);
     }
 
     /**

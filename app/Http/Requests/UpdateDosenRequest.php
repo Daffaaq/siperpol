@@ -36,6 +36,7 @@ class UpdateDosenRequest extends FormRequest
             'tanggal_lahir_dosen' => 'required|date',
             'pendidikan_terakhir_dosen' => 'required|string',
             'status_kepegawaian_dosen' => 'required|in:PNS,Honorer,Lainnya',
+            'jurusans_id' => 'required|exists:jurusans,id',
             'status_kepegawaian_lainnya' => [
                 'nullable',
                 'required_if:status_kepegawaian_dosen,Lainnya',

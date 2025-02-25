@@ -13,10 +13,21 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('dosen.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dosen
-                    </a>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex">
+                        <select id="jurusanFilter" class="form-control" style="width: 200px;">
+                            <option value="">-- Select Jurusan --</option>
+                            @foreach ($jurusans as $jurusan)
+                                <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <a href="{{ route('dosen.create') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dosen
+                        </a>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="DosenTables" width="100%" cellspacing="0">
@@ -26,6 +37,7 @@
                                 <th>Nama Dosen</th>
                                 <th>Email</th>
                                 <th>Jenis Kelamin</th>
+                                <th>Jurusan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,8 +91,9 @@
                     url: '{{ route('dosen.list') }}',
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    data: function(d) {
+                        d.jurusan_id = $('#jurusanFilter').val(); // Mengirimkan jurusan_id ke server
+                        d._token = '{{ csrf_token() }}';
                     }
                 },
                 columns: [{
@@ -105,6 +118,10 @@
                         }
                     },
                     {
+                        data: 'nama_jurusan',
+                        name: 'nama_jurusan'
+                    },
+                    {
                         data: 'id',
                         name: 'id',
                         orderable: false,
@@ -114,16 +131,16 @@
                             let editUrl = `/user-management/dosen/${data}/edit`;
 
                             return `
-                                <a href="${showUrl}" class="btn icon btn-sm btn-info">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="${editUrl}" class="btn icon btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            `;
+                        <a href="${showUrl}" class="btn icon btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="${editUrl}" class="btn icon btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
                         }
                     }
                 ],
@@ -131,6 +148,11 @@
                 drawCallback: function(settings) {
                     $('a').tooltip();
                 }
+            });
+
+            // Apply filter when a new jurusan is selected
+            $('#jurusanFilter').change(function() {
+                dataMaster.ajax.reload();
             });
 
             @if (session('success'))
@@ -146,6 +168,7 @@
                 });
             @endif
         });
+
 
         function confirmDelete(id) {
             Swal.fire({
