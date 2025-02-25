@@ -28,7 +28,8 @@ class StaffController extends Controller
     public function list(Request $request)
     {
         $staff = DB::table('staff')
-            ->select('id', 'nama_staff', 'email_staff', 'jenis_kelamin_staff');
+            ->leftJoin ('jurusans', 'staff.jurusans_id', '=', 'jurusans.id')
+            ->select('staff.id', 'staff.nama_staff', 'staff.email_staff', 'staff.jenis_kelamin_staff', 'jurusans.nama_jurusan');
 
         return DataTables::of($staff)
             ->addIndexColumn()
@@ -47,7 +48,8 @@ class StaffController extends Controller
      */
     public function create()
     {
-        return view('staff.create');
+        $jurusans = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
+        return view('staff.create', compact('jurusans'));
     }
 
     /**
@@ -120,8 +122,10 @@ class StaffController extends Controller
      */
     public function edit(Staff $staff)
     {
+        $jurusans = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
         return view('staff.edit')
-            ->with('staff', $staff);
+            ->with('staff', $staff)
+            ->with('jurusans', $jurusans);
     }
 
     /**

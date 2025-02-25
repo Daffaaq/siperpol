@@ -24,6 +24,25 @@
                     <div class="row">
                         <!-- Left Column (6 fields) -->
                         <div class="col-md-6">
+                            <!-- Jurusan -->
+                            <div class="form-group">
+                                <label for="jurusans_id">Jurusan: <span class="text-danger">*</span></label>
+                                <select name="jurusans_id" id="jurusans_id"
+                                    class="form-control @error('jurusans_id') is-invalid @enderror">
+                                    <option value="">Pilih Jurusan</option>
+                                    @foreach ($jurusans as $jurusan)
+                                        <option value="{{ $jurusan->id }}"
+                                            {{ old('jurusans_id') == $jurusan->id ? 'selected' : '' }}>
+                                            {{ $jurusan->nama_jurusan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusans_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                             <!-- Nama Staff -->
                             <div class="form-group">
                                 <label for="nama_staff">Nama Staff: <span class="text-danger">*</span></label>

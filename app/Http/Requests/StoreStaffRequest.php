@@ -32,6 +32,7 @@ class StoreStaffRequest extends FormRequest
             'tanggal_lahir_staff' => 'required|date',  // Validate if the birth date is a valid date
             'pendidikan_terakhir_staff' => 'nullable|string',  // Optional field
             'status_kepegawaian_staff' => 'nullable|in:PNS,Honorer,Lainnya',  // Optional field with specific options
+            'jurusans_id' => 'nullable|exists:jurusans,id',
             'status_kepegawaian_lainnya' => [
                 'nullable',
                 'required_if:status_kepegawaian_staff,Lainnya',

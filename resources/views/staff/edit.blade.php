@@ -12,7 +12,8 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ route('staff.edit', $staff->id) }}" class="{{ request()->routeIs('staff.edit') ? 'active' : '' }}">
+                        <a href="{{ route('staff.edit', $staff->id) }}"
+                            class="{{ request()->routeIs('staff.edit') ? 'active' : '' }}">
                             Edit Staff
                         </a>
                     </li>
@@ -27,6 +28,25 @@
                     <div class="row">
                         <!-- Left Column (6 fields) -->
                         <div class="col-md-6">
+                            <!-- Jurusan -->
+                            <div class="form-group">
+                                <label for="jurusans_id">Jurusan:</label>
+                                <select name="jurusans_id" id="jurusans_id"
+                                    class="form-control @error('jurusans_id') is-invalid @enderror">
+                                    <option value="">Pilih Jurusan</option>
+                                    @foreach ($jurusans as $jurusan)
+                                        <option value="{{ $jurusan->id }}"
+                                            {{ old('jurusans_id', $staff->jurusans_id) == $jurusan->id ? 'selected' : '' }}>
+                                            {{ $jurusan->nama_jurusan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusans_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                             <!-- Nama Staff -->
                             <div class="form-group">
                                 <label for="nama_staff">Nama Staff: <span class="text-danger">*</span></label>
@@ -63,7 +83,8 @@
                             <!-- No Telepon Staff -->
                             <div class="form-group">
                                 <label for="no_telepon_staff">No Telepon Staff:</label>
-                                <input type="text" name="no_telepon_staff" id="no_telepon_staff" placeholder="No Telepon Staff"
+                                <input type="text" name="no_telepon_staff" id="no_telepon_staff"
+                                    placeholder="No Telepon Staff"
                                     class="form-control @error('no_telepon_staff') is-invalid @enderror"
                                     value="{{ old('no_telepon_staff', $staff->no_telepon_staff) }}">
                                 @error('no_telepon_staff')
@@ -73,7 +94,8 @@
 
                             <!-- Tanggal Lahir Staff -->
                             <div class="form-group">
-                                <label for="tanggal_lahir_staff">Tanggal Lahir Staff: <span class="text-danger">*</span></label>
+                                <label for="tanggal_lahir_staff">Tanggal Lahir Staff: <span
+                                        class="text-danger">*</span></label>
                                 <input type="date" name="tanggal_lahir_staff" id="tanggal_lahir_staff"
                                     class="form-control @error('tanggal_lahir_staff') is-invalid @enderror"
                                     value="{{ old('tanggal_lahir_staff', $staff->tanggal_lahir_staff) }}">
@@ -85,10 +107,12 @@
 
                         <!-- Right Column (5 fields) -->
                         <div class="col-md-6">
-                             <!-- Nama Panggilan Staff -->
+                            <!-- Nama Panggilan Staff -->
                             <div class="form-group">
-                                <label for="nama_panggilan_staff">Nama Panggilan Staff: <span class="text-danger">*</span></label>
-                                <input type="text" name="nama_panggilan_staff" id="nama_panggilan_staff" placeholder="Nama Panggilan Staff"
+                                <label for="nama_panggilan_staff">Nama Panggilan Staff: <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="nama_panggilan_staff" id="nama_panggilan_staff"
+                                    placeholder="Nama Panggilan Staff"
                                     class="form-control @error('nama_panggilan_staff') is-invalid @enderror"
                                     value="{{ old('nama_panggilan_staff', $staff->nama_panggilan_staff) }}">
                                 @error('nama_panggilan_staff')
@@ -100,9 +124,11 @@
                                 <label for="jenis_kelamin_staff">Jenis Kelamin: <span class="text-danger">*</span></label>
                                 <select name="jenis_kelamin_staff" id="jenis_kelamin_staff"
                                     class="form-control @error('jenis_kelamin_staff') is-invalid @enderror">
-                                    <option value="L" {{ old('jenis_kelamin_staff', $staff->jenis_kelamin_staff) == 'L' ? 'selected' : '' }}>
+                                    <option value="L"
+                                        {{ old('jenis_kelamin_staff', $staff->jenis_kelamin_staff) == 'L' ? 'selected' : '' }}>
                                         Laki-laki</option>
-                                    <option value="P" {{ old('jenis_kelamin_staff', $staff->jenis_kelamin_staff) == 'P' ? 'selected' : '' }}>
+                                    <option value="P"
+                                        {{ old('jenis_kelamin_staff', $staff->jenis_kelamin_staff) == 'P' ? 'selected' : '' }}>
                                         Perempuan</option>
                                 </select>
                                 @error('jenis_kelamin_staff')
@@ -110,16 +136,32 @@
                                 @enderror
                             </div>
 
+                            <!-- Pendidikan Terakhir Staff -->
+                            <div class="form-group">
+                                <label for="pendidikan_terakhir_staff">Pendidikan Terakhir:</label>
+                                <input type="text" name="pendidikan_terakhir_staff" id="pendidikan_terakhir_staff"
+                                    placeholder="Pendidikan Terakhir"
+                                    class="form-control @error('pendidikan_terakhir_staff') is-invalid @enderror"
+                                    value="{{ old('pendidikan_terakhir_staff', $staff->pendidikan_terakhir_staff) }}">
+                                @error('pendidikan_terakhir_staff')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+
                             <!-- Status Kepegawaian Staff -->
                             <div class="form-group">
                                 <label for="status_kepegawaian_staff">Status Kepegawaian:</label>
                                 <select name="status_kepegawaian_staff" id="status_kepegawaian_staff"
                                     class="form-control @error('status_kepegawaian_staff') is-invalid @enderror">
-                                    <option value="PNS" {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'PNS' ? 'selected' : '' }}>
+                                    <option value="PNS"
+                                        {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'PNS' ? 'selected' : '' }}>
                                         PNS</option>
-                                    <option value="Honorer" {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'Honorer' ? 'selected' : '' }}>
+                                    <option value="Honorer"
+                                        {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'Honorer' ? 'selected' : '' }}>
                                         Honorer</option>
-                                    <option value="Lainnya" {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'Lainnya' ? 'selected' : '' }}>
+                                    <option value="Lainnya"
+                                        {{ old('status_kepegawaian_staff', $staff->status_kepegawaian_staff) == 'Lainnya' ? 'selected' : '' }}>
                                         Lainnya</option>
                                 </select>
                                 @error('status_kepegawaian_staff')

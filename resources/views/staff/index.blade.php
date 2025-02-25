@@ -26,6 +26,7 @@
                                 <th>Nama Staff</th>
                                 <th>Email</th>
                                 <th>Jenis Kelamin</th>
+                                <th>Jurusan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -103,6 +104,10 @@
                         render: function(data) {
                             return data == 'L' ? 'Laki-laki' : 'Perempuan';
                         }
+                    },
+                    {
+                        data: 'nama_jurusan',
+                        name: 'nama_jurusan'
                     },
                     {
                         data: 'id',
