@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             MenuGroupSeeder::class,
             MenuItemSeeder::class,
             JurusanSeeder::class,
-            FasilitasSeeder::class
+            FasilitasSeeder::class,
+            ProdiSeeder::class,
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\FasilitasController;
 use App\Http\Controllers\JadwalTidakTersediaController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KetuaJurusanController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\Menu\MenuGroupController;
 use App\Http\Controllers\Menu\MenuItemController;
 use App\Http\Controllers\MessageController;
@@ -93,6 +94,11 @@ Route::group(['middleware' => ['auth']], function () {
         //staff
         Route::resource('staff', StaffController::class);
         Route::post('/staff/list', [StaffController::class, 'list'])->name('staff.list');
+
+        //mahasiswa
+        Route::resource('mahasiswa', MahasiswaController::class);
+        Route::post('/mahasiswa/list', [MahasiswaController::class, 'list'])->name('mahasiswa.list');
+        Route::get('/mahasiswa/getprodi/{id}', [MahasiswaController::class, 'getProdi'])->name('mahasiswa.getProdi');
     });
     Route::prefix('category-management')->group(function () {
         Route::resource('category', CategoryController::class);

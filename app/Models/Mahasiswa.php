@@ -15,6 +15,7 @@ class Mahasiswa extends Model
     // Tentukan kolom yang bisa diisi secara massal (mass assignable)
     protected $fillable = [
         'nama_mahasiswa',
+        'nama_pendek_mahasiswa',
         'email_mahasiswa',
         'password_mahasiswa',
         'alamat_mahasiswa',
