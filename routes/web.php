@@ -98,7 +98,10 @@ Route::group(['middleware' => ['auth']], function () {
         //mahasiswa
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::post('/mahasiswa/list', [MahasiswaController::class, 'list'])->name('mahasiswa.list');
+        Route::get('/getjurusan', [MahasiswaController::class, 'getJurusan'])->name('mahasiswa.getJurusan');
         Route::get('/mahasiswa/getprodi/{id}', [MahasiswaController::class, 'getProdi'])->name('mahasiswa.getProdi');
+        Route::get('/import-mahasiswa', [MahasiswaController::class, 'ImportForm'])->name('mahasiswa.show-import');
+        Route::post('/import-mahasiswa', [MahasiswaController::class, 'importMahasiswa'])->name('mahasiswa.import');
     });
     Route::prefix('category-management')->group(function () {
         Route::resource('category', CategoryController::class);

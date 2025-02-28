@@ -35,7 +35,9 @@ class AssignUserToRoleController extends Controller
                 ];
             });
 
-            return response()->json(['data' => $data]); // Mengembalikan data dalam bentuk JSON
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make(true);
         }
     }
     /**

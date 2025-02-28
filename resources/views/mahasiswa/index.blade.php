@@ -13,12 +13,34 @@
                 </ol>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('mahasiswa.create') }}"
-                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Create New Mahasiswa
-                    </a>
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Dropdown Filters (Taruh di kiri) -->
+                    <div class="d-flex">
+                        <select id="jurusanFilter" class="form-control form-control-sm mr-2">
+                            <option value="">Select Jurusan</option>
+                            <!-- Jurusan options will be added dynamically -->
+                        </select>
+                        <select id="prodiFilter" class="form-control form-control-sm">
+                            <option value="">Select Prodi</option>
+                            <!-- Prodi options will be added dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons (Taruh di kanan) -->
+                    <div class="d-flex">
+                        <a href="{{ route('mahasiswa.show-import') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2">
+                            <i class="fas fa-upload fa-sm text-white-50"></i> Mahasiswa Import
+                        </a>
+                        <a href="{{ route('mahasiswa.create') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Mahasiswa
+                        </a>
+                    </div>
                 </div>
+
+
+                <!-- Table -->
                 <div class="table-responsive">
                     <table class="table table-bordered" id="MahasiswaTables" width="100%" cellspacing="0">
                         <thead>
@@ -73,6 +95,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $(document).ready(function() {
+            // Load Jurusan options
+            $.ajax({
+                url: '{{ route('mahasiswa.getJurusan') }}', // Pastikan ini sesuai dengan route yang benar
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var jurusanSelect = $('#jurusanFilter');
+                    jurusanSelect.empty();
+                    jurusanSelect.append('<option value="">Select Jurusan</option>');
+                    $.each(response, function(index, jurusan) {
+                        jurusanSelect.append('<option value="' + jurusan.id + '">' + jurusan
+                            .nama_jurusan + '</option>');
+                    });
+                }
+            });
+
+
+            // Jurusan Filter Change
+            $('#jurusanFilter').on('change', function() {
+                var jurusanId = $(this).val();
+                var prodiSelect = $('#prodiFilter');
+                prodiSelect.empty();
+                prodiSelect.append('<option value="">Select Prodi</option>');
+
+                if (jurusanId) {
+                    // Fetch Prodi based on selected Jurusan
+                    $.ajax({
+                        url: '{{ route('mahasiswa.getProdi', ':jurusanId') }}'.replace(':jurusanId',
+                            jurusanId),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            $.each(response, function(index, prodi) {
+                                prodiSelect.append('<option value="' + prodi.id + '">' +
+                                    prodi.nama_prodi + '</option>');
+                            });
+                        }
+                    });
+
+                }
+            });
+
+            // DataTable Initialization with Filters
             var dataMaster = $('#MahasiswaTables').DataTable({
                 processing: true,
                 serverSide: true,
@@ -80,8 +145,10 @@
                     url: '{{ route('mahasiswa.list') }}',
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    data: function(d) {
+                        d._token = '{{ csrf_token() }}'; // Mengirimkan token CSRF
+                        d.prodi_id = $('#prodiFilter').val(); // Mendapatkan prodi_id yang dipilih
+                        d.jurusan_id = $('#jurusanFilter').val(); // Mendapatkan jurusan_id yang dipilih
                     }
                 },
                 columns: [{
@@ -112,16 +179,16 @@
                             let editUrl = `/user-management/mahasiswa/${data}/edit`;
 
                             return `
-                                <a href="${showUrl}" class="btn icon btn-sm btn-info">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="${editUrl}" class="btn icon btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            `;
+                        <a href="${showUrl}" class="btn icon btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="${editUrl}" class="btn icon btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn icon btn-sm btn-danger" onclick="confirmDelete('${data}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
                         }
                     }
                 ],
@@ -129,6 +196,9 @@
                 drawCallback: function(settings) {
                     $('a').tooltip();
                 }
+            });
+            $('#jurusanFilter, #prodiFilter').on('change', function() {
+                dataMaster.draw(); // Force DataTable to reload data
             });
 
             @if (session('success'))
@@ -144,6 +214,7 @@
                 });
             @endif
         });
+
 
         function confirmDelete(id) {
             Swal.fire({

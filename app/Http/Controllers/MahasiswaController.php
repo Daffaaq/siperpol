@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AlertAndMessagesEvent;
+use App\Http\Requests\ImportMahasiswaRequest;
 use App\Http\Requests\StoreMahasiswaRequest;
 use App\Http\Requests\UpdateMahasiswaRequest;
 use App\Models\Mahasiswa;
@@ -12,6 +13,9 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MahasiswaImport;
+use App\Models\Prodi;
 
 class MahasiswaController extends Controller
 {
@@ -31,11 +35,24 @@ class MahasiswaController extends Controller
             ->leftJoin('jurusans', 'prodis.jurusans_id', '=', 'jurusans.id')
             ->select('mahasiswas.id', 'mahasiswas.nama_mahasiswa', 'prodis.nama_prodi', 'jurusans.nama_jurusan');
 
-        //datatables
+        // Filter berdasarkan jurusan_id jika ada (jurusan ada di tabel prodis)
+        if ($request->has('jurusan_id') && $request->jurusan_id != '') {
+            $mahasiswa->where('prodis.jurusans_id', $request->jurusan_id);
+        }
+
+        // Filter berdasarkan prodi_id jika ada
+        if ($request->has('prodi_id') && $request->prodi_id != '') {
+            $mahasiswa->where('prodis.id', $request->prodi_id);
+        }
+
+        // Return datatables response
         return datatables::of($mahasiswa)
             ->addIndexColumn()
             ->make(true);
     }
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -51,6 +68,12 @@ class MahasiswaController extends Controller
     {
         $getJurusan = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
         return view('mahasiswa.create', compact('getJurusan'));
+    }
+
+    public function getJurusan()
+    {
+        $jurusan = DB::table('jurusans')->get();
+        return response()->json($jurusan);
     }
 
     public function getProdi($id)
@@ -220,5 +243,22 @@ class MahasiswaController extends Controller
                 'message' => 'Mahasiswa Deleted Failed'
             ]);
         }
+    }
+
+    public function ImportForm()
+    {
+        $getJurusan = DB::table('jurusans')->select('id', 'nama_jurusan')->get();
+        return view('mahasiswa.import', compact('getJurusan'));
+    }
+
+    public function importMahasiswa(ImportMahasiswaRequest $request)
+    {
+        // Dapatkan prodis_id yang dipilih atau dikirim
+        $prodis_id = $request->input('prodis_id');
+
+        // Lakukan impor
+        Excel::import(new MahasiswaImport($prodis_id), $request->file('file'));
+
+        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diimpor.');
     }
 }

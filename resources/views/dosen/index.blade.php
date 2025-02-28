@@ -23,6 +23,10 @@
                         </select>
                     </div>
                     <div>
+                        <a href="{{ asset('sb-admin/exdatadummy/dosen_data_dummy1.xlsx') }}"
+                            class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                            <i class="fas fa-download fa-sm text-white-50"></i> Download Template Excel
+                        </a>
                         <a href="{{ route('dosen.show-import') }}"
                             class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                             <i class="fas fa-upload fa-sm text-white-50"></i> Dosen Import
